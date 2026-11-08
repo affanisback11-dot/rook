@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rook</title>
+<script>window.onerror=function(m,s,l){var d=document.createElement("pre");d.style.cssText="white-space:pre-wrap;background:#300;color:#fdd;padding:8px;margin:0;font-size:12px;position:relative;z-index:200";
+d.textContent="Error: "+m+" (line "+l+")";document.body?document.body.prepend(d):0}</script>
+<script>
+// Paste your values here (see SETUP.md). This file is safe to publish.
+window.ROOK_CONFIG = {
+  firebase: {
+    apiKey: "AIzaSyDR8xZOLvNbLxGaIn64C8kxLsgKwX02RFs",
+    authDomain: "rook-ba864.firebaseapp.com",
+    projectId: "rook-ba864",
+    appId: "1:180468315007:web:8decdac84814bb73dde04a"
+  },
+  aiUrl: "https://rookai.affanisback11.workers.dev"
+};
+</script>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;700;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#E9ECE6;--sf:#fff;--ink:#14181F;--mu:#5B6472;--ln:#D3D8CE;--acc:#1E7F5C;--ai:#fff;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0D1117;--sf:#161B24;--ink:#ECEFF4;--mu:#97A1B3;--ln:#262E3C}
+}
+:root[data-theme="dark"]{--bg:#0D1117;--sf:#161B24;--ink:#ECEFF4;--mu:#97A1B3;--ln:#262E3C}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif;padding-bottom:84px}
+main{max-width:560px;margin:0 auto;padding:14px 16px}
+h1,h2,h3{font-family:Archivo,system-ui,sans-serif;margin:0 0 8px;line-height:1.1}
+h1{font-size:28px;font-weight:800}
+h2{font-size:24px;font-weight:800}
+h3{font-size:17px;font-weight:700;margin-top:6px}
+p{margin:0 0 10px}
+.mu{color:var(--mu);font-size:14px}
+header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+header div{display:flex;gap:6px}
+select,input[type=text],input[type=number],textarea{font:inherit;color:var(--ink);background:var(--sf);border:1px solid var(--ln);border-radius:10px;padding:10px 12px;width:100%;margin-bottom:8px}
+button{font:inherit;font-weight:600;cursor:pointer;border:0;border-radius:10px;padding:11px 15px;background:var(--acc);color:var(--ai)}
+button.g{background:transparent;color:var(--ink);border:1px solid var(--ln)}
+button.s{padding:7px 11px;font-size:14px}
+button:disabled{opacity:.5}
+:focus-visible{outline:3px solid var(--acc);outline-offset:2px}
+.bx{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:14px;margin-bottom:12px}
+nav{position:fixed;left:0;right:0;bottom:0;display:flex;background:var(--sf);border-top:1px solid var(--ln);padding-bottom:env(safe-area-inset-bottom,0px);z-index:5}
+nav button{flex:1;background:none;color:var(--mu);border-radius:0;padding:15px 1px;font-size:12px}
+nav button[aria-current=true]{color:var(--acc);box-shadow:inset 0 3px 0 var(--acc)}
+.sc{font-family:Archivo,system-ui,sans-serif;font-weight:800;font-size:84px;line-height:1;letter-spacing:-.04em;color:var(--acc)}
+.sc small{font-size:20px;color:var(--mu);font-weight:500}
+.pv{width:100%;max-height:300px;object-fit:cover;border-radius:12px;margin-bottom:8px}
+.row{display:flex;gap:8px;align-items:center}
+.row>*{margin-bottom:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px}
+.chip{border:1px solid var(--ln);background:transparent;color:var(--ink);border-radius:99px;padding:7px 13px;font-size:14px}
+.chip.on{background:var(--acc);color:var(--ai);border-color:var(--acc)}
+.chat{display:flex;flex-direction:column;gap:8px;margin-bottom:12px}
+.m{padding:10px 12px;border-radius:12px;white-space:pre-wrap;max-width:90%}
+.m.u{align-self:flex-end;background:var(--acc);color:var(--ai)}
+.m.a{align-self:flex-start;background:var(--sf);border:1px solid var(--ln)}
+.bar{height:8px;background:var(--ln);border-radius:4px;overflow:hidden;margin:3px 0 9px}
+.bar i{display:block;height:100%;background:var(--acc)}
+.hr{display:flex;align-items:center;gap:10px;padding:11px 0;border-bottom:1px solid var(--ln)}
+.hr:last-child{border:0}
+.hr b{flex:1;font-weight:600}
+.hr button{padding:6px 12px}
+.ex{padding:10px 0;border-bottom:1px solid var(--ln)}
+details{border-bottom:1px solid var(--ln);padding:10px 0}
+summary{font-weight:700;cursor:pointer}
+ul{padding-left:20px;margin:6px 0}
+.err{color:#C23A3A;font-size:14px}
+.rest{position:fixed;right:16px;bottom:78px;z-index:6;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.sp{position:fixed;inset:0;z-index:99;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;animation:spo .5s 2.3s forwards}
+.rk{fill:var(--acc);fill-opacity:0;stroke:var(--acc);stroke-width:2;stroke-linejoin:round;stroke-dasharray:320;stroke-dashoffset:320;animation:dr 1.2s .2s ease forwards,fl .6s 1.2s forwards}
+.wm{font:800 34px Archivo,system-ui,sans-serif;letter-spacing:.3em;margin-right:-.3em;opacity:0;transform:translateY(8px);animation:wm .6s 1.4s forwards}
+@keyframes dr{to{stroke-dashoffset:0}
+}
+@keyframes fl{to{fill-opacity:1}
+}
+@keyframes wm{to{opacity:1;transform:none}
+}
+@keyframes spo{to{opacity:0;visibility:hidden}
+}
+@media (prefers-reduced-motion:reduce){.sp{display:none}
+}
+.lg{display:flex;align-items:center;gap:8px}
+.lg svg{width:28px;height:28px;fill:var(--acc)}
+.cam{position:fixed;inset:0;z-index:98;background:#000;color:#fff;display:flex;flex-direction:column;gap:10px;padding:max(12px,env(safe-area-inset-top)) 12px 12px}
+.cam video{flex:1;min-height:0;width:100%;object-fit:cover;border-radius:12px;background:#111}
+.cam .row>*{flex:1}
+.cam .fb,.cam .g{color:#fff;border-color:#555}
+.cm{margin:0;font-size:14px;color:#ddd}
+.cam h2{color:#fff;margin-top:18vh}
+.cam .fb.big{background:var(--acc);color:var(--ai);border-color:var(--acc)}
+.lgn{position:fixed;inset:0;z-index:90;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;padding:24px;text-align:center}
+.lgn[hidden]{display:none}
+.lgn svg{width:72px;height:72px;fill:var(--acc)}
+.vm{display:none;position:fixed;left:16px;right:16px;bottom:76px;z-index:20;background:var(--sf);border:1px solid var(--ln);border-radius:12px;padding:12px;box-shadow:0 2px 12px rgba(0,0,0,.25)}
+.fb{flex:1;text-align:center;cursor:pointer;border:1px solid var(--ln);border-radius:10px;padding:11px;font-weight:600}
+.imgs{display:flex;gap:8px}
+.imgs img{width:50%;border-radius:10px;object-fit:cover;aspect-ratio:1}
+.bd{display:inline-block;border:1px solid var(--ln);border-radius:99px;padding:4px 12px;font-size:14px;margin:0 6px 6px 0}
+.bd.on{background:var(--acc);color:var(--ai);border-color:var(--acc)}
+.dots{display:inline-flex;gap:5px;vertical-align:middle}
+.dots i{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.35;animation:bn 1.1s infinite ease-in-out}
+.dots i:nth-child(2){animation-delay:.18s}
+.dots i:nth-child(3){animation-delay:.36s}
+@keyframes bn{0%,80%,100%{transform:translateY(0);opacity:.35}
+40%{transform:translateY(-6px);opacity:1}
+}
+.think{display:flex;flex-direction:column;align-items:center;gap:12px;padding:22px 10px;text-align:center}
+.think svg{width:64px;height:64px;fill:var(--acc);animation:pl 1.4s infinite ease-in-out}
+@keyframes pl{0%,100%{transform:scale(1);opacity:.75}
+50%{transform:scale(1.12);opacity:1}
+}
+.think p{margin:0;color:var(--mu)}
+@media (prefers-reduced-motion:reduce){.dots i,.think svg{animation:none}
+}
+html{scroll-behavior:smooth}
+button,.fb,.chip{transition:transform .12s ease,background .2s,opacity .2s,color .2s,box-shadow .25s}
+button:active,.fb:active,.chip:active{transform:scale(.95)}
+.cts{display:flex;gap:8px;overflow-x:auto;padding-bottom:8px;margin-bottom:6px;scrollbar-width:none}
+.cts .chip{white-space:nowrap;flex:none}
+@keyframes ent{from{opacity:0;transform:translateX(var(--dx,0px))}
+}
+@keyframes up{from{opacity:0;transform:translateY(14px)}
+}
+@keyframes pop{from{opacity:0;transform:translateY(8px) scale(.97)}
+}
+@keyframes grow{from{transform:scaleX(0)}
+}
+@keyframes fade{from{opacity:0}
+}
+@keyframes draw{from{stroke-dashoffset:1}
+to{stroke-dashoffset:0}
+}
+@keyframes ring{from{stroke-dasharray:0 214}
+}
+#view.enter{animation:ent .32s cubic-bezier(.2,.8,.2,1)}
+#view.enter .bx{animation:up .45s both}
+#view.enter .bx:nth-of-type(2){animation-delay:.06s}
+#view.enter .bx:nth-of-type(3){animation-delay:.12s}
+#view.enter .bx:nth-of-type(4){animation-delay:.18s}
+#view.enter .bx:nth-of-type(5){animation-delay:.24s}
+#view.enter polyline{stroke-dasharray:1;animation:draw 1.1s ease both}
+#view.enter .ring{animation:ring 1s cubic-bezier(.2,.8,.2,1)}
+.chat .m{animation:pop .3s both}
+.fresh .bx{animation:up .5s both}
+.fresh .bx:nth-child(2){animation-delay:.25s}
+.fresh .bx:nth-child(3){animation-delay:.4s}
+.fresh .bx:nth-child(4){animation-delay:.55s}
+.fresh .bar i{transform-origin:left;animation:grow 1s .35s cubic-bezier(.2,.8,.2,1) both}
+.fresh li{animation:up .5s both}
+.fresh li:nth-child(1){animation-delay:.6s}
+.fresh li:nth-child(2){animation-delay:.72s}
+.fresh li:nth-child(3){animation-delay:.84s}
+.fresh li:nth-child(n+4){animation-delay:.96s}
+.vm{animation:up .3s}
+.cam{animation:fade .2s}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;scroll-behavior:auto!important}
+}
+.act{background:var(--sf);border:1px solid var(--acc);border-radius:12px;padding:12px;margin:4px 0;animation:pop .3s both}
+.act ul{margin:6px 0 10px}
+</style>
+</head>
+<body>
+<div class="sp" id="sp" aria-hidden="true">
+<svg viewBox="0 0 64 64" width="120" height="120">
+<path class="rk" d="M12 56V49H16L19 28H15V10H25V16H29V10H35V16H39V10H49V28H45L48 49H52V56Z"/>
+</svg>
+<div class="wm">Rook</div>
+</div>
+<input type="file" id="vf" accept="image/*" capture="environment" hidden><div id="vm" class="vm" role="status"></div>
+<div class="lgn" id="lg" hidden>
+<svg viewBox="0 0 64 64" aria-hidden="true">
+<path d="M12 56V49H16L19 28H15V10H25V16H29V10H35V16H39V10H49V28H45L48 49H52V56Z"/>
+</svg>
+<h1>Rook</h1>
+<p class="mu">Sign in to sync across devices, join the ranks and use the AI.</p>
+<button id="gs">Continue with Google</button>
+<button class="g" id="ns">Continue without account</button>
+<p id="le" class="err">
+</p>
+</div>
+<main>
+<header><h1 class="lg"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 56V49H16L19 28H15V10H25V16H29V10H35V16H39V10H49V28H45L48 49H52V56Z"/></svg>Rook</h1></header>
+<div id="view"></div>
+</main>
+<nav id="nav"></nav>
+<script>
+const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)];
+const esc=s=>String(s==null?"":s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",
+'"':"&quot;"}[c]));
+const DEF={prof:{goals:[],lvl:"Beginner",days:3,equip:"None",tone:"Balanced",adult:false,done:false}
+,
+set:{theme:"auto",acc:"#1E7F5C",units:"metric",tabs:{rate:1,coach:1,train:1,habits:1}},scores:[],
+habits:[["Drink water",8],["Sleep 7+ hours",1],["Skincare morning",1],["Skincare night",1],
+["Steps 8,000",1],["Workout",1],["Read 10 min",1],["No-phone hour",1]].map((h,i)=>({id:"h"+
+i,name:h[0],target:h[1]})),
+log:{},plans:[],pb:{},weights:[],wc:0};
+let D;try{D=Object.assign({},DEF,JSON.parse(localStorage.getItem("rook")||"{}"))}catch(e){D=Object.assign({
+},DEF)}
+const save=()=>{D.ts=Date.now();try{localStorage.setItem("rook",JSON.stringify(D))}catch(e){
+}push()};
+let S=null;window.setAI=f=>{S=f};
+window.makeAI=user=>{const f=async(input,o={})=>{const tok=await user.getIdToken();
+let m=(typeof input==="string"?[{role:"user",content:input}]:input).map(x=>({role:x.role,content:x.content}
+));
+if(o.images&&o.images.length){const l=m[m.length-1],p=[];for(const b of o.images)p.push({type:"image",
+source:{type:"base64",media_type:"image/jpeg",data:(await b64(b)).split(",")[1]}});p.push({
+type:"text",text:l.content});l.content=p}
+const call=async()=>{try{return await fetch(window.ROOK_CONFIG.aiUrl,{method:"POST",headers:{
+"content-type":"application/json",authorization:"Bearer "+tok},body:JSON.stringify({messages:m}
+)})}catch(e){throw{code:"error",detail:"Network: "+e.message}}};
+let r=await call();
+for(let k=0;k<2&&(r.status===502||r.status===503);k++){await new Promise(z=>setTimeout(z,1800));
+r=await call()}
+if(r.status===429)throw{code:"rate_limited"};if(!r.ok){let t="";try{t=(await r.text()).slice(0,
+300)}catch(e){}throw{code:"error",detail:"HTTP "+r.status+" "+t}}
+const d=await r.json();if(o.onText)o.onText({text:d.text});return{text:d.text}};
+f.limits=async()=>({images:true});return f};
+const SY={ref:null,tref:null,st:"local only",t:null};
+function push(){if(!SY.ref)return;clearTimeout(SY.t);SY.t=setTimeout(async()=>{try{let th=JSON.stringify(D.scores.slice(-20).map(x=>x.thumb));
+if(th.length>200000)th=JSON.stringify(D.scores.slice(-10).map(x=>x.thumb));const l=JSON.parse(JSON.stringify(D));
+l.scores=l.scores.map(x=>Object.assign({},x,{thumb:""}));await SY.ref.set({d:JSON.stringify(l),
+ts:D.ts});await SY.tref.set({th});SY.st="on"}catch(e){SY.st="failed"}},1500)}
+window.startSync=async(db,id)=>{try{
+SY.db=db;SY.id=id;SY.ref=db.doc("data/users/"+id+"/main");SY.tref=db.doc("data/users/"+id+"/thumbs");
+const s=await SY.ref.get();
+if(s.exists&&s.data().ts>(D.ts||0)){const r=JSON.parse(s.data().d);let th=[];try{const t=await SY.tref.get();
+if(t.exists)th=JSON.parse(t.data().th)}catch(e){}
+const off=r.scores.length-th.length;r.scores.forEach((x,i)=>{x.thumb=th[i-off]||""});r.ts=s.data().ts;
+D=Object.assign({},DEF,r);try{localStorage.setItem("rook",JSON.stringify(D))}catch(e){}theme();
+go(D.prof.done?(cur==="onb"?"rate":cur):"onb")}
+else push();SY.st="on"}catch(e){SY.st="local only"}};
+const TONE={Gentle:"Be warm and encouraging.",Balanced:"Be honest and constructive.","Brutally honest":"Be blunt and direct, but never cruel or insulting."}
+;
+const ctx=()=>{const p=D.prof,l=D.scores.slice(-3).map(x=>x.s).join(", ");return"User profile: goals "+
+(p.goals.join(", ")||"general improvement")+"; level "+p.lvl+"; "+p.days+" days/week; equipment "+
+p.equip+"; units "+D.set.units+". "+TONE[p.tone]+(l?" Recent photo scores: "+l+".":"")};
+const aiErr=e=>{if(!S)return"Sign in with Google to use the AI.";const d=(e&&e.detail)||"";
+if(e&&e.code)console.warn("AI error",e.code,d);
+if(e&&e.code==="rate_limited")return"The AI needs a short break. Try again in a minute.";
+if(/HTTP 401/.test(d))return"Your sign-in expired. Reload Rook and sign in again.";
+if(/HTTP 50[23]/.test(d))return"The AI is busy right now. Wait a few seconds and tap again.";
+if(/Network/.test(d))return"Can’t reach the AI. Check your connection and try again.";
+return"Something went wrong. Try again in a moment."};
+function think(el,msgs){let i=0;el.innerHTML=('<div class="think"><svg viewBox="0 0 64 64" aria-hidden="true"><path d="M12 56V49H16L19 '+
+'28H15V10H25V16H29V10H35V16H39V10H49V28H45L48 49H52V56Z"/></svg><p role="status"></p><span '+
+'class="dots"><i></i><i></i><i></i></span></div>');
+const p=el.querySelector("p");p.textContent=msgs[0];
+const t=setInterval(()=>{if(!el.isConnected){clearInterval(t);return}i=(i+1)%msgs.length;p.textContent=msgs[i]}
+,2200);return()=>clearInterval(t)}
+const pj=t=>{t=t.replace(/```json|```/g,"");const a=Math.min(...["{","["].map(c=>t.indexOf(c)).filter(i=>i>=0));
+const b=Math.max(t.lastIndexOf("}"),t.lastIndexOf("]"));return JSON.parse(t.slice(a,b+1))};
+const dk=d=>d.toISOString().slice(0,10);
+
+function theme(){const r=document.documentElement,s=D.set;
+if(s.theme==="auto")r.removeAttribute("data-theme");else r.setAttribute("data-theme",s.theme);
+r.style.setProperty("--acc",s.acc);const n=parseInt(s.acc.slice(1),16),L=(.299*(n>>16)+.587*((n>>8)&255)+
+.114*(n&255))/255;
+r.style.setProperty("--ai",L>.6?"#111":"#fff")}
+
+const TABS={rate:"Rate",coach:"Coach",train:"Train",habits:"Habits",ranks:"Ranks"};let cur="rate";
+let ANIM=true,DIR=1,lastV=null,freshRes=false;const RM=window.matchMedia&&matchMedia("(prefers-reduced-motion:reduce)").matches;
+const V=h=>{const v=$("#view");v.innerHTML=h;v.classList.remove("enter");if(ANIM){window.scrollTo(0,
+0);if(!RM){v.style.setProperty("--dx",(DIR*26)+"px");void v.offsetWidth;v.classList.add("enter")}
+}};
+function go(n){const order=[...Object.keys(TABS),"me","set"];DIR=order.indexOf(n)<order.indexOf(cur)?-1:1;
+ANIM=(n!==lastV);lastV=n;cur=n;const on=Object.keys(TABS).filter(k=>D.set.tabs[k]!==0);
+const ALL=on.map(k=>[k,TABS[k]]).concat([["me","Me"],["set","Settings"]]);$("#nav").innerHTML=ALL.map(([k,
+t])=>'<button data-t="'+k+'"'+(k===n?' aria-current="true"':"")+">"+t+"</button>").join("");
+$$("#nav button").forEach(b=>b.onclick=()=>go(b.dataset.t));V_[n]()}
+const V_={};
+
+
+function spark(a){if(a.length<2)return'<p class="mu">Add more entries to see a trend.</p>';
+const lo=Math.min(...a),hi=Math.max(...a),r=hi-lo||1,pts=a.map((v,i)=>(i/(a.length-1)*296+2)+
+","+(56-(v-lo)/r*50)).join(" ");
+return'<svg viewBox="0 0 300 60" width="100%" role="img" aria-label="Trend"><polyline pathLength="1" points="'+
+pts+'" fill="none" stroke="var(--acc)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round"/></svg>'}
+
+/* profile form (onboarding + settings) */
+const GOALS=["Looks","Muscle","Fat loss","Confidence","Style","Skin","Sleep","Discipline"];
+function pform(){const p=D.prof,o=(a,v)=>a.map(x=>"<option"+(String(x)===String(v)?" selected":"")+
+">"+x+"</option>").join("");
+return'<h3>Goals</h3><div class="chips">'+GOALS.map(g=>'<button class="chip'+(p.goals.includes(g)?" on":"")+
+'" data-g="'+g+'">'+g+"</button>").join("")+"</div>"
++'<h3>Level</h3><select id="pl">'+o(["Beginner","Intermediate","Advanced"],p.lvl)+"</select>"
++'<h3>Days per week</h3><select id="pd">'+o([2,3,4,5,6],p.days)+"</select>"
++'<h3>Equipment</h3><select id="pe">'+o(["None","Dumbbells","Full gym"],p.equip)+"</select>"
++'<h3>Coach tone</h3><select id="pt">'+o(["Gentle","Balanced","Brutally honest"],p.tone)+"</select>"}
+function pbind(){const p=D.prof;
+$$("[data-g]").forEach(b=>b.onclick=()=>{const g=b.dataset.g;p.goals=p.goals.includes(g)?p.goals.filter(x=>x!==g):[...p.goals,
+g];b.classList.toggle("on");save()});
+[["pl","lvl"],["pd","days"],["pe","equip"],["pt","tone"]].forEach(([i,k])=>$("#"+i).onchange=e=>{
+p[k]=k==="days"?+e.target.value:e.target.value;save()})}
+V_.onb=()=>{V('<h2>Set up Rook</h2><p class="mu">Takes under a minute. You can change everything later.</p><div class="bx">'+
+pform()+'<label class="row"><input type="checkbox" id="pa"'+(D.prof.adult?" checked":"")+(' style="width:22px;height:22px"> I’m 18 or older</label></div><div class="row"><button '+
+'id="ok">Start</button><button class="g" id="sk">Skip</button></div>'));
+pbind();$("#pa").onchange=e=>{D.prof.adult=e.target.checked;save()};
+$("#ok").onclick=$("#sk").onclick=()=>{D.prof.done=true;save();go("rate")}};
+
+/* rate */
+let blob=null,thumb="",last=null;
+async function shrink(f,m,q){const im=await createImageBitmap(f),r=Math.min(1,m/Math.max(im.width,
+im.height)),c=document.createElement("canvas");
+c.width=Math.round(im.width*r);c.height=Math.round(im.height*r);c.getContext("2d").drawImage(im,
+0,0,c.width,c.height);return new Promise(res=>c.toBlob(res,"image/jpeg",q))}
+const b64=b=>new Promise(r=>{const f=new FileReader();f.onload=()=>r(f.result);f.readAsDataURL(b)}
+);
+function showRes(d){const sub=d.sub||{};
+return'<div class="bx"><div class="sc">'+'<span class="cnt" data-v="'+esc(Number(d.score).toFixed(1))+
+'">'+(freshRes?"0.0":esc(Number(d.score).toFixed(1)))+'</span><small> / 10</small></div><p>'+
+esc(d.summary)+'</p>'
++Object.keys(sub).map(k=>'<div class="mu">'+esc(k)+" "+esc(sub[k])+'/10</div><div class="bar"><i style="width:'+
+Math.max(0,Math.min(10,sub[k]))*10+'%"></i></div>').join("")+"</div>"
++'<div class="bx"><h3>Strengths</h3><ul>'+(d.strengths||[]).map(x=>"<li>"+esc(x)+"</li>").join("")+
+"</ul><h3>Fix first</h3><ul>"+(d.fixes||[]).map(f=>"<li><b>"+esc(f.area)+":</b> "+esc(f.tip)+
+"</li>").join("")+"</ul><h3>Your 7 days</h3><ul>"+(d.week||[]).map(x=>"<li>"+esc(x)+"</li>").join("")+
+"</ul></div>"}
+V_.rate=()=>{
+if(!D.prof.adult){V(('<h2>Photo review</h2><div class="bx"><p>This feature is for adults. Confirm you’re 18 or '+
+'older to continue.</p><button id="ad">I’m 18 or older</button></div>'));$("#ad").onclick=()=>{
+D.prof.adult=true;save();go("rate")};return}
+const sc=D.scores;blob=null;
+V(('<h2>Photo review</h2><p class="mu">One AI’s opinion of one photo, not your worth.</p><div '+
+'class="bx"><select id="kind"><option>Face</option><option>Outfit</option><option>Full '+
+'body</option></select><img id="pv" class="pv" hidden alt=""><div class="row" '+
+'style="margin-bottom:8px"><label class="fb">Choose photo<input type="file" id="f" '+
+'accept="image/*" hidden></label><label class="fb">Take photo<input type="file" id="f2" '+
+'accept="image/*" capture="user" hidden></label></div><button id="go" disabled>Rate my '+
+'photo</button><p id="e" class="err"></p></div><div id="res" class="'+(freshRes?"fresh":"")+
+'">')+(last?showRes(last):"")+"</div>"
++(sc.length?'<div class="bx"><h3>Score history</h3>'+spark(sc.map(x=>x.s))+(sc.length>1?'<div class="imgs"><img src="'+
+sc[0].thumb+'" alt="First photo"><img src="'+sc[sc.length-1].thumb+'" alt="Latest photo"></div><p class="mu">First: '+
+sc[0].s.toFixed(1)+" · Latest: "+sc[sc.length-1].s.toFixed(1)+"</p>":"")+"</div>":""));
+if(freshRes){freshRes=false;const c=$(".cnt");if(c){countUp(c,+c.dataset.v);if(!RM)$("#res").scrollIntoView({
+behavior:"smooth",block:"start"})}}
+const pick=async e=>{const f=e.target.files[0];if(!f)return;try{blob=await shrink(f,900,.85);
+thumb=await b64(await shrink(f,140,.6));$("#pv").src=URL.createObjectURL(blob);$("#pv").hidden=false;
+$("#go").disabled=false;$("#e").textContent=""}catch(x){$("#e").textContent="Couldn’t read that image. Try a JPG or PNG."}
+};$("#f").onchange=$("#f2").onchange=pick;
+$("#go").onclick=async()=>{const e=$("#e");e.textContent="";if(!S){e.textContent=aiErr();return}
+$("#go").disabled=true;$("#go").textContent="Analyzing…";const stopT=think($("#res"),["Studying your photo…",
+"Checking grooming and style…","Writing your plan…"]);
+try{if(!(await S.limits()).images){e.textContent="Photo analysis isn’t enabled for you yet. Coach still works.";
+return}
+const p="You are an appearance and style coach. The user is an adult who asked for an honest look at this "+
+$("#kind").value.toLowerCase()+" photo. "+ctx()+(" Rate overall presentation 1-10 with one decimal, plus sub-scores out of 10 for grooming, "+
+"skin, hair, style, posture, photo (omit any that can’t be judged). Be specific and never "+
+"cruel; no comments on race, disability or medical conditions. Reply with ONLY JSON: "+
+"{\"score\":n,\"sub\":{\"grooming\":n,...},\"summary\":\"two sentences\",\"strengths\":[3 "+
+"items],\"fixes\":[{\"area\":\"\",\"tip\":\"specific action\"} x3 in priority "+
+"order],\"week\":[7 daily actions]}");
+const d=pj((await S(p,{images:[blob],cache:false})).text);last=d;
+D.scores.push({t:Date.now(),s:+d.score,sub:d.sub||{},thumb});D.scores=D.scores.slice(-30);save();
+freshRes=true;go("rate")}
+catch(x){stopT();$("#res").innerHTML=last?showRes(last):"";e.textContent=x&&x.code?aiErr(x):"Couldn’t read the result. Try again.";
+$("#go").disabled=false;
+$("#go").textContent="Rate my photo"}}};
+
+/* coach */
+function curChat(){if(!D.chats)D.chats=[];let c=D.chats.find(x=>x.id===D.chat);if(!c){c={id:"c"+
+Date.now(),title:"New chat",msgs:[]};D.chats.unshift(c);D.chat=c.id;save()}return c}
+function typeOut(el,text,done){if(RM){el.textContent=text;if(done)done();return}const w=text.split(/(\s+)/);
+let i=0;
+const t=setInterval(()=>{if(!el.isConnected){clearInterval(t);if(done)done();return}i=Math.min(w.length,
+i+2);el.textContent=w.slice(0,i).join("");if(i>=w.length){clearInterval(t);if(done)done()}}
+,40)}
+function countUp(el,v){if(RM){el.textContent=v.toFixed(1);return}const t0=performance.now();
+const f=n=>{const p=Math.min(1,(n-t0)/1300);el.textContent=(v*(1-Math.pow(1-p,3))).toFixed(1);
+if(p<1&&el.isConnected)requestAnimationFrame(f);else el.textContent=v.toFixed(1)};requestAnimationFrame(f)}
+const cl=(x,n)=>String(x==null?"":x).trim().slice(0,n),num=(x,a,b,d)=>Math.max(a,Math.min(b,
+Math.round(+x||d)));
+function cleanActions(a){if(!Array.isArray(a))return[];const out=[];
+for(const x of a.slice(0,12)){if(!x||typeof x!=="object")continue;const d=x.do,n=cl(x.name,
+40);if(!n)continue;
+if(d==="add_habit")out.push({do:d,name:n,target:num(x.target,1,20,1)});
+else if(d==="remove_habit"||d==="remove_plan")out.push({do:d,name:n});
+else if(d==="edit_habit")out.push({do:d,name:n,new_name:cl(x.new_name,40),target:x.target?num(x.target,
+1,20,1):0});
+else if(d==="add_plan"&&Array.isArray(x.ex)){const ex=x.ex.slice(0,12).map(e=>({n:cl(e&&e.n,
+40),s:num(e&&e.s,1,10,3),r:cl(e&&e.r,16)||"10",tip:cl(e&&e.tip,100)})).filter(e=>e.n);if(ex.length)out.push({
+do:d,name:n,ex})}}
+return out}
+const findH=n=>{n=n.toLowerCase();return D.habits.find(h=>h.name.toLowerCase()===n)||D.habits.find(h=>h.name.toLowerCase().includes(n)||n.includes(h.name.toLowerCase()))}
+;
+const desc=a=>a.do==="add_habit"?"Add habit: "+a.name+" ("+a.target+"× a day)":a.do==="remove_habit"?"Remove habit: "+
+a.name:a.do==="edit_habit"?"Change habit: "+a.name+(a.new_name?" → "+a.new_name:"")+(a.target?", target "+
+a.target:""):a.do==="add_plan"?"New workout: "+a.name+" ("+a.ex.length+" exercises)":"Remove workout: "+
+a.name;
+function applyActions(L){const done=[];L.forEach((a,i)=>{
+if(a.do==="add_habit"){const h=findH(a.name);if(h)h.target=a.target;else D.habits.push({id:"h"+
+Date.now()+i,name:a.name,target:a.target});done.push(desc(a))}
+else if(a.do==="remove_habit"){const h=findH(a.name);if(h){D.habits.splice(D.habits.indexOf(h),
+1);done.push(desc(a))}}
+else if(a.do==="edit_habit"){const h=findH(a.name);if(h){if(a.new_name)h.name=a.new_name;if(a.target)h.target=a.target;
+done.push(desc(a))}}
+else if(a.do==="add_plan"){const k=D.plans.findIndex(p=>p.name.toLowerCase()===a.name.toLowerCase());
+if(k>=0)D.plans[k]={name:a.name,ex:a.ex};else D.plans.push({name:a.name,ex:a.ex});D.plans=D.plans.slice(-20);
+done.push(desc(a))}
+else if(a.do==="remove_plan"){const k=D.plans.findIndex(p=>p.name.toLowerCase().includes(a.name.toLowerCase()));
+if(k>=0){D.plans.splice(k,1);done.push(desc(a))}}});
+save();return done}
+const SYS=()=>"You are a practical self-improvement coach (fitness, grooming, style, sleep, confidence, habits). "+
+ctx()+" The user’s current habits: "+(D.habits.map(h=>h.name+" ("+h.target+"x/day)").join(", ")||"none")+
+". Their saved workouts: "+(D.plans.map(p=>p.name).join(", ")||"none")+". Keep replies short. Suggest a professional for medical issues. "
++("You can edit the user’s Habits and Train tabs. When they ask you to create, change or "+
+"remove a routine, habit or workout (or agree to your suggestion), do it: write a short "+
+"reply, then on a new line write <<ACTIONS>> followed by a JSON array and nothing else. "+
+"Action formats: ")
++("{\"do\":\"add_habit\",\"name\":\"\",\"target\":1}, "+
+"{\"do\":\"edit_habit\",\"name\":\"existing name\",\"new_name\":\"\",\"target\":1}, "+
+"{\"do\":\"remove_habit\",\"name\":\"existing name\"}, "+
+"{\"do\":\"add_plan\",\"name\":\"\",\"ex\":[{\"n\":\"exercise\",\"s\":3,\"r\":\"10\",\"tip\":\"short "+
+"form cue\"}]}, {\"do\":\"remove_plan\",\"name\":\"existing name\"}. ")
++"Only include <<ACTIONS>> when a change is wanted, and never say a change was made unless you include it.";
+V_.coach=()=>{const c=curChat();
+V('<h2>Coach</h2><div class="cts">'+D.chats.map(x=>'<button class="chip'+(x.id===c.id?" on":"")+
+'" data-ch="'+x.id+'">'+esc(x.title)+'</button>').join("")+'<button class="chip" id="nc">＋ New chat</button></div><div class="chips">'+
+["Build me a routine","Fix my skincare","Plan my week","I’m unmotivated"].map(q=>'<button class="chip" data-c="'+
+q+'">'+q+'</button>').join("")+('</div><div class="chat" id="ch"></div><div class="row"><input type="text" id="q" '+
+'placeholder="Ask your coach" aria-label="Message"><button id="sd">Send</button></div><p '+
+'id="e" class="err"></p>')+(c.msgs.length?'<button class="g s" id="dc">Delete this chat</button>':""));
+const add=(k,t,s)=>{const d=document.createElement("div");d.className="m "+k;d.textContent=t;
+$("#ch").appendChild(d);if(s)d.scrollIntoView({block:"nearest",behavior:RM?"auto":"smooth"}
+);return d};
+function offer(L){const box=document.createElement("div");box.className="act";$("#ch").appendChild(box);
+const snap=JSON.stringify({h:D.habits,p:D.plans});
+const list=a=>"<ul>"+a.map(x=>"<li>"+esc(x)+"</li>").join("")+"</ul>";
+const run=()=>{const done=applyActions(L);box.innerHTML="<b>"+(done.length?"Done":"Nothing changed")+
+"</b>"+list(done)+('<div class="row"><button class="g s" data-o="habits">Open Habits</button><button class="g '+
+'s" data-o="train">Open Train</button><button class="g s" data-o="undo">Undo</button></div>');
+box.querySelectorAll("[data-o]").forEach(b=>b.onclick=()=>{if(b.dataset.o==="undo"){const s=JSON.parse(snap);
+D.habits=s.h;D.plans=s.p;save();box.innerHTML="<b>Undone</b>"}else go(b.dataset.o)})};
+if(D.set.auto)run();else{box.innerHTML="<b>Suggested changes</b>"+list(L.map(desc))+'<div class="row"><button id="ap">Apply</button><button class="g" id="sk2">Skip</button></div>';
+box.querySelector("#ap").onclick=run;box.querySelector("#sk2").onclick=()=>box.remove()}
+box.scrollIntoView({block:"nearest",behavior:RM?"auto":"smooth"})}
+add("a",c.msgs.length?"Welcome back. What’s next?":"I’m your coach. I can also build and edit your habits and workouts. What do you want to improve first?");
+c.msgs.forEach(m=>add(m.role==="user"?"u":"a",m.content));
+async function send(t){if(!t)return;$("#e").textContent="";if(!S){$("#e").textContent=aiErr();
+return}
+c.msgs.push({role:"user",content:t});if(c.msgs.length===1){c.title=t.slice(0,22);const ch=$("[data-ch].on");
+if(ch)ch.textContent=c.title}save();
+add("u",t,1);$("#q").value="";$("#sd").disabled=true;const b=add("a","",1);b.innerHTML='<span class="dots"><i></i><i></i><i></i></span>';
+const h=c.msgs.slice(-19).map(x=>({role:x.role,content:x.content}));h[0]={role:"user",content:SYS()+
+"\n\n"+h[0].content};
+try{const o=await S(h,{cache:false});const pt=o.text.split("<<ACTIONS>>");const vis=pt[0].trim()||"Done.";
+let L=[];if(pt[1]){try{L=cleanActions(pj(pt[1]))}catch(e){}}
+c.msgs.push({role:"assistant",content:vis});c.msgs=c.msgs.slice(-60);save();b.textContent="";
+typeOut(b,vis,()=>{$("#sd").disabled=false;if(L.length)offer(L)})}
+catch(x){b.remove();c.msgs.pop();save();$("#e").textContent=aiErr(x);$("#sd").disabled=false}
+}
+$("#sd").onclick=()=>send($("#q").value.trim());$("#q").onkeydown=e=>{if(e.key==="Enter")send($("#q").value.trim())}
+;
+$$("[data-c]").forEach(b=>b.onclick=()=>send(b.dataset.c));
+$$("[data-ch]").forEach(b=>b.onclick=()=>{D.chat=b.dataset.ch;save();go("coach")});
+$("#nc").onclick=()=>{if(c.msgs.length){const n={id:"c"+Date.now(),title:"New chat",msgs:[]}
+;D.chats.unshift(n);D.chats=D.chats.slice(0,20);D.chat=n.id;save()}go("coach")};
+const dc=$("#dc");if(dc)dc.onclick=()=>{D.chats=D.chats.filter(x=>x.id!==c.id);D.chat=D.chats[0]&&D.chats[0].id;
+save();go("coach")}};
+
+/* train */
+const L=(n,s,r,tip)=>({n,s,r,tip});
+const LIB={"Bodyweight":[L("Squat",3,"12","Knees track over toes, chest up."),L("Push-up",3,
+"8","Body in one line; use knees if needed."),L("Glute bridge",3,"15","Squeeze at the top.")],
+"Dumbbell":[L("Goblet squat",3,"10","Hold weight at chest."),L("One-arm row",3,"10","Pull elbow to hip."),
+L("Overhead press",3,"8","Ribs down, brace your core.")],
+"Gym":[L("Lat pulldown",3,"10","Pull to upper chest."),L("Leg press",3,"12","Don’t lock your knees."),
+L("Cable row",3,"10","Keep shoulders down.")],
+"Posture and core":[L("Wall angel",2,"10","Keep ribs and lower back on the wall."),L("Dead bug",
+3,"8","Lower back stays flat."),L("Plank",3,"30s","Squeeze glutes.")],
+"Mobility":[L("Cat-cow",2,"10","Move slowly with your breath."),L("Hip flexor stretch",2,"30s",
+"Tuck pelvis under."),L("Thoracic rotation",2,"8","Rotate from the upper back.")],
+"Cardio":[L("Brisk walk or jog",1,"10 min","Conversation pace."),L("Intervals",6,"1 min hard",
+"1 min hard, 2 min easy."),L("Cooldown walk",1,"5 min","Let your heart rate drop.")]};
+let wk=null;
+V_.train=()=>{const pl=D.plans;
+V(('<h2>Train</h2><div class="bx"><h3>AI plan</h3><select '+
+'id="mn"><option>20</option><option>30</option><option selected>45</option></select><p '+
+'class="mu">Minutes per session, built from your goals, level and equipment.</p><button '+
+'id="gp">Build my plan</button><p id="e" class="err"></p></div>')
++(pl.length?'<div class="bx"><h3>My plans</h3>'+pl.map((p,i)=>'<div class="hr"><b>'+esc(p.name)+
+'</b><button class="s" data-s="'+i+'">Start</button><button class="g s" data-d="'+i+'" aria-label="Delete plan">✕</button></div>').join("")+
+"</div>":"")
++'<div class="bx"><h3>Library</h3>'+Object.keys(LIB).map(k=>"<details><summary>"+k+"</summary>"+
+LIB[k].map(x=>'<div class="ex"><b>'+esc(x.n)+"</b> "+x.s+"×"+esc(x.r)+'<div class="mu">'+esc(x.tip)+
+"</div></div>").join("")+'<button class="s" data-l="'+k+'">Start this</button></details>').join("")+
+"</div>"
++(Object.keys(D.pb).length?'<div class="bx"><h3>Personal bests</h3>'+Object.keys(D.pb).map(k=>'<div class="hr"><b>'+
+esc(k)+"</b>"+D.pb[k]+" "+(D.set.units==="metric"?"kg":"lb")+"</div>").join("")+"</div>":""));
+$$("[data-s]").forEach(b=>b.onclick=()=>{wk=pl[b.dataset.s];go("wk")});
+$$("[data-l]").forEach(b=>b.onclick=()=>{wk={name:b.dataset.l,ex:LIB[b.dataset.l]};go("wk")}
+);
+$$("[data-d]").forEach(b=>b.onclick=()=>{D.plans.splice(+b.dataset.d,1);save();go("train")}
+);
+$("#gp").onclick=async()=>{const e=$("#e");e.textContent="";if(!S){e.textContent=aiErr();return}
+$("#gp").disabled=true;$("#gp").innerHTML='Building <span class="dots"><i></i><i></i><i></i></span>';
+try{const o=await S(ctx()+" Build one workout of about "+$("#mn").value+(" minutes suited to this person’s equipment and level. Reply with ONLY JSON: "+
+"{\"name\":\"short title\",\"ex\":[{\"n\":\"exercise\",\"s\":3,\"r\":\"10\",\"tip\":\"one "+
+"short form cue\"}]}"),{cache:false});
+const d=pj(o.text);D.plans.push({name:d.name,ex:d.ex});save();go("train")}catch(x){e.textContent=x&&x.code?aiErr(x):"Couldn’t read the plan. Try again.";
+$("#gp").disabled=false;$("#gp").textContent="Build my plan"}}};
+let tm=null;
+V_.wk=()=>{if(!wk)return go("train");const u=D.set.units==="metric"?"kg":"lb";
+V('<h2>'+esc(wk.name)+'</h2>'+(D.set.proof!==0?('<p class="mu">Camera proof mode is on: tap 📷 Check to log each set. Turn it off in '+
+'Settings to tick sets by hand.</p>'):"")+wk.ex.map((x,i)=>'<div class="bx"><b>'+esc(x.n)+"</b> · "+
+x.s+" × "+esc(x.r)+'<button class="g s" data-v="'+i+'" style="float:right" aria-label="Verify with camera">📷 Check</button><div class="mu">'+
+esc(x.tip)+'</div><div class="row" style="margin-top:8px">'+Array.from({length:Math.max(1,+
+x.s||1)},()=>'<input type="checkbox" style="width:26px;height:26px;accent-color:var(--acc)" aria-label="Set done"'+
+(D.set.proof!==0?" disabled":"")+'>').join("")+'<input type="number" inputmode="decimal" data-w="'+
+i+'" placeholder="'+u+(D.pb[x.n]?" (best "+D.pb[x.n]+")":"")+'" style="max-width:150px"></div></div>').join("")
++('<button class="rest" id="rt">Rest 60s</button><div class="row"><button id="fn">Finish '+
+'workout</button><button class="g" id="cn">Cancel</button></div>'));
+$("#rt").onclick=()=>{clearInterval(tm);let n=60;$("#rt").textContent="Rest "+n+"s";tm=setInterval(()=>{
+n--;if(!$("#rt")||n<=0){clearInterval(tm);if($("#rt"))$("#rt").textContent="Rest over. Go!";
+return}$("#rt").textContent="Rest "+n+"s"},1000)};
+$("#cn").onclick=()=>{clearInterval(tm);go("train")};
+$$("[data-v]").forEach(b=>b.onclick=()=>verify(wk.ex[b.dataset.v].n+" (exercise, "+wk.ex[b.dataset.v].r+
+")",()=>{const c=[...b.closest(".bx").querySelectorAll('input[type=checkbox]')].find(x=>!x.checked);
+if(c)c.checked=true}));
+$("#fn").onclick=()=>{clearInterval(tm);$$("[data-w]").forEach(i=>{const v=parseFloat(i.value),
+n=wk.ex[i.dataset.w].n;if(v>0&&v>(D.pb[n]||0))D.pb[n]=v});D.wc++;
+const t=dk(new Date());D.log[t]=D.log[t]||{};const w=D.habits.find(h=>/workout/i.test(h.name));
+if(w)D.log[t][w.id]=w.target;save();go("train")}};
+
+/* habits */
+let hed=false;
+const hdone=(day)=>D.habits.length&&D.habits.filter(h=>((D.log[day]||{})[h.id]||0)>=h.target).length>=Math.ceil(D.habits.length/2);
+function streak(){let n=0,d=new Date();if(!hdone(dk(d)))d.setDate(d.getDate()-1);while(hdone(dk(d))){
+n++;d.setDate(d.getDate()-1)}return n}
+function week(){let t=0;for(let i=0;i<7;i++){const d=new Date();d.setDate(d.getDate()-i);const l=D.log[dk(d)]||{
+};t+=D.habits.length?D.habits.reduce((a,h)=>a+Math.min(1,(l[h.id]||0)/h.target),0)/D.habits.length:0}
+return Math.round(t/7*100)}
+V_.habits=()=>{const t=dk(new Date()),l=D.log[t]||{},pc=week();
+V(('<h2>Habits</h2><div class="bx row"><svg width="84" height="84" viewBox="0 0 84 84" '+
+'role="img" aria-label="Week ')+pc+(' percent"><circle cx="42" cy="42" r="34" fill="none" stroke="var(--ln)" '+
+'stroke-width="9"/><circle cx="42" cy="42" r="34" fill="none" stroke="var(--acc)" '+
+'stroke-width="9" class="ring" stroke-linecap="round" stroke-dasharray="')+(2.137*pc)+(' 214" transform="rotate(-90 42 42)"/><text x="42" y="48" text-anchor="middle" '+
+'font-size="18" font-weight="800" fill="currentColor">')+pc+'%</text></svg><div><h1>'+streak()+
+'</h1><span class="mu">day streak · week done</span></div></div>'
++'<div class="bx">'+D.habits.map((h,i)=>hed?'<div class="hr"><input type="text" data-n="'+i+
+'" value="'+esc(h.name)+'" aria-label="Habit name" style="margin:0"><input type="number" data-t="'+
+i+'" value="'+h.target+'" min="1" aria-label="Daily target" style="max-width:70px;margin:0"><button class="g s" data-u="'+
+i+'" aria-label="Move up">↑</button><button class="g s" data-x="'+i+'" aria-label="Delete">✕</button></div>'
+:'<div class="hr"><b>'+esc(h.name)+'</b><button class="g s" data-m="'+i+'" aria-label="Minus">−</button><span>'+
+(l[h.id]||0)+"/"+h.target+'</span><button class="g s" data-v="'+i+'" aria-label="Verify with camera">📷</button><button class="s" data-p="'+
+i+'" aria-label="Plus">+</button></div>').join("")
++(hed?('<div class="row" style="margin-top:10px"><input type="text" id="nh" placeholder="New '+
+'habit"><button id="ah">Add</button></div>'):"")+'</div><div class="row"><button class="g" id="ed">'+
+(hed?"Done editing":"Edit habits")+('</button><button class="g" id="rv">Weekly review</button></div><p id="e" '+
+'class="err"></p><div id="rvt" class="m a" style="display:none;max-width:100%"></div>'));
+const set=(i,v)=>{const h=D.habits[i];D.log[t]=D.log[t]||{};D.log[t][h.id]=Math.max(0,Math.min(h.target*2,
+v));save();go("habits")};
+$$("[data-p]").forEach(b=>b.onclick=()=>{const i=+b.dataset.p,go1=()=>set(i,(l[D.habits[i].id]||0)+
+1);D.set.proof!==0?verify(D.habits[i].name,go1):go1()});
+$$("[data-v]").forEach(b=>b.onclick=()=>verify(D.habits[b.dataset.v].name,()=>set(+b.dataset.v,
+(l[D.habits[b.dataset.v].id]||0)+1)));$$("[data-m]").forEach(b=>b.onclick=()=>set(+b.dataset.m,
+(l[D.habits[b.dataset.m].id]||0)-1));
+$$("[data-n]").forEach(i=>i.onchange=()=>{D.habits[i.dataset.n].name=i.value.trim()||D.habits[i.dataset.n].name;
+save()});$$("[data-t]").forEach(i=>i.onchange=()=>{D.habits[i.dataset.t].target=Math.max(1,
++i.value||1);save()});
+$$("[data-u]").forEach(b=>b.onclick=()=>{const i=+b.dataset.u;if(i>0){[D.habits[i-1],D.habits[i]]=[D.habits[i],
+D.habits[i-1]];save();go("habits")}});
+$$("[data-x]").forEach(b=>b.onclick=()=>{D.habits.splice(+b.dataset.x,1);save();go("habits")}
+);
+if(hed)$("#ah").onclick=()=>{const v=$("#nh").value.trim();if(v){D.habits.push({id:"h"+Date.now(),
+name:v,target:1});save();go("habits")}};
+$("#ed").onclick=()=>{hed=!hed;go("habits")};
+$("#rv").onclick=async()=>{const e=$("#e");e.textContent="";if(!S){e.textContent=aiErr();return}
+$("#rv").disabled=true;const r0=$("#rvt");r0.style.display="block";r0.innerHTML='<span class="dots"><i></i><i></i><i></i></span>';
+const sm=[];for(let i=6;i>=0;i--){const d=new Date();d.setDate(d.getDate()-i);const q=D.log[dk(d)]||{
+};sm.push(dk(d)+": "+D.habits.map(h=>h.name+" "+(q[h.id]||0)+"/"+h.target).join(", "))}
+try{const o=await S(ctx()+" Here is the last 7 days of habit tracking:\n"+sm.join("\n")+"\nIn under 100 words: what went well, and the one thing to fix next week with a concrete tactic.",
+{cache:false});const r=$("#rvt");r.style.display="block";r.textContent=o.text}
+catch(x){$("#rvt").style.display="none";e.textContent=aiErr(x)}finally{$("#rv").disabled=false}
+}};
+
+/* camera sheet */
+function snap(face,skip){return new Promise(res=>{const ov=document.createElement("div");ov.className="cam";
+ov.innerHTML=('<h2>Take a photo</h2><p class="cm">Tap Open camera, take the photo, then confirm '+
+'it.</p><div class="row"><label class="fb big">Open camera<input type="file" id="cp" '+
+'accept="image/*" capture="')+(face?"user":"environment")+('" hidden></label><label class="fb">Gallery<input type="file" id="cg" accept="image/*" '+
+'hidden></label></div><div class="row"><button class="g" id="cx">Cancel</button>')+(skip?'<button class="g" id="sk">Count without proof</button>':"")+
+'</div>';
+document.body.appendChild(ov);const msg=ov.querySelector(".cm");let done=false;
+const end=b=>{if(done)return;done=true;ov.remove();res(b)};
+const got=async e=>{const f=e.target.files[0];if(!f)return;msg.textContent="Loading photo…";
+try{end(await shrink(f,900,.8))}catch(x){msg.textContent="Couldn’t read that photo. Try another."}
+};
+ov.querySelector("#cp").onchange=got;ov.querySelector("#cg").onchange=got;ov.querySelector("#cx").onclick=()=>end(null);
+const sk=ov.querySelector("#sk");if(sk)sk.onclick=()=>end("skip")})}
+
+/* old live camera (unused) */
+function snapOld(face){return new Promise(res=>{const ov=document.createElement("div");ov.className="cam";
+ov.innerHTML=('<video playsinline autoplay muted></video><p class="cm"></p><div class="row"><button '+
+'id="cs">Take photo</button><label class="fb">Photo picker<input type="file" id="cp" '+
+'accept="image/*" capture="')+(face?"user":"environment")+'" hidden></label><button class="g" id="cx">Cancel</button></div>';
+document.body.appendChild(ov);const v=ov.querySelector("video"),msg=ov.querySelector(".cm");
+let st=null,done=false;
+const end=b=>{if(done)return;done=true;if(st)st.getTracks().forEach(t=>t.stop());ov.remove();
+res(b)};
+ov.querySelector("#cx").onclick=()=>end(null);
+ov.querySelector("#cp").onchange=async e=>{const f=e.target.files[0];end(f?await shrink(f,900,
+.8):null)};
+ov.querySelector("#cs").onclick=()=>{if(!v.videoWidth){msg.textContent="Live view isn’t working, opening your camera app…";
+ov.querySelector("#cp").click();return}const c=document.createElement("canvas"),r=Math.min(1,
+900/Math.max(v.videoWidth,v.videoHeight));c.width=Math.round(v.videoWidth*r);c.height=Math.round(v.videoHeight*r);
+c.getContext("2d").drawImage(v,0,0,c.width,c.height);c.toBlob(b=>end(b),"image/jpeg",.8)};
+const fail=w=>{msg.textContent=w+" ";const b=document.createElement("button");b.className="g s";
+b.textContent="Count without proof";b.onclick=()=>end("skip");msg.appendChild(b)};
+if(!navigator.mediaDevices||!navigator.mediaDevices.getUserMedia){fail("Live camera isn’t available here. Try Photo picker.");
+return}
+msg.textContent="Starting camera…";setTimeout(()=>{if(!done&&!v.videoWidth)fail("Live view didn’t start. Tap Take photo to use your camera app.")}
+,5000);
+navigator.mediaDevices.getUserMedia({video:{facingMode:{ideal:face?"user":"environment"}},audio:false}
+).then(s=>{if(done){s.getTracks().forEach(t=>t.stop());return}st=s;v.srcObject=s;msg.textContent="";
+v.onclick=()=>v.play().catch(()=>{});v.play().catch(()=>{})}).catch(e=>fail("Camera blocked ("+
+((e&&e.name)||"error")+")."))})}
+
+/* camera check */
+async function verify(task,cb){const m=$("#vm");const hide=()=>setTimeout(()=>{m.style.display="none"}
+,6000);
+const f=await snap(0,1);if(!f)return;if(f==="skip"){cb();return}{m.style.display="block";
+if(!S){m.textContent=aiErr();hide();return}m.innerHTML='Checking <span class="dots"><i></i><i></i><i></i></span>';
+try{if(!(await S.limits()).images){m.textContent="Photo checks aren’t enabled for you yet.";
+hide();return}
+const b=f;
+const o=await S("You verify task completion from a photo. Task: \""+task+("\". Look for clear visual evidence the task was done or is being done right now (for "+
+"example the person mid-exercise, a finished setup, a glass of water, an open book). If "+
+"the photo doesn’t clearly show it, it is not verified. Reply with ONLY JSON: "+
+"{\"done\":true or false,\"reason\":\"one short sentence\"}"),{images:[b],cache:false});
+const d=pj(o.text);m.textContent=(d.done?"Verified: ":"Not verified: ")+d.reason;if(d.done)cb();
+hide()}
+catch(x){m.textContent=x&&x.code?aiErr(x):"Couldn’t check that photo. Try again.";hide()}}}
+
+/* ranks */
+const pts=()=>D.wc*10+streak()*5+D.scores.length*3+Object.keys(D.log).filter(hdone).length*2;
+V_.ranks=()=>{V(('<h2>Global ranks</h2><p class="mu">10 points per workout, 5 per streak day, 3 per photo '+
+'rating, 2 per full habit day. Joining shows only your nickname and points.</p><div '+
+'class="bx"><div class="sc">')+pts()+'<small> pts</small></div><input type="text" id="nk" placeholder="Pick a nickname" maxlength="20" value="'+
+esc(D.nick||"")+'" aria-label="Nickname" style="margin-top:10px"><button id="jn">'+(D.nick?"Update my rank":"Join ranks")+
+'</button><p id="e" class="err"></p></div><div class="bx" id="bd"><p class="mu">Loading…</p></div>');
+$("#jn").onclick=async()=>{const n=$("#nk").value.trim().slice(0,20);if(!n){$("#e").textContent="Pick a nickname first.";
+return}
+if(!SY.db){$("#e").textContent="Sign in with Google to join.";return}
+try{await SY.db.doc("board/"+SY.id).set({nick:n,pts:pts(),ts:Date.now()});D.nick=n;save();go("ranks")}
+catch(x){$("#e").textContent="Couldn’t join. Try again."}};
+board()};
+async function board(){const el=$("#bd");if(!el)return;if(!SY.db){el.innerHTML='<p class="mu">Sign in with Google to see the board.</p>';
+return}
+try{if(D.nick){try{await SY.db.doc("board/"+SY.id).set({nick:D.nick,pts:pts(),ts:Date.now()}
+)}catch(e){}}
+const q=await SY.db.collection("board").orderBy("pts","desc").limit(50).get();
+el.innerHTML=q.docs.length?'<h3>Top players</h3>'+q.docs.map((d,i)=>{const x=d.data();return'<div class="hr"><span class="mu" style="width:26px">'+
+(i+1)+'</span><b>'+esc(x.nick)+(d.id===SY.id?" (you)":"")+'</b>'+esc(x.pts)+"</div>"}).join(""):'<p class="mu">No one has joined yet. Be first.</p>'}
+catch(x){el.innerHTML='<p class="mu">Couldn’t load the board. Try again later.</p>'}}
+
+/* me */
+V_.me=()=>{const u=D.set.units==="metric"?"kg":"lb",w=D.weights,st=streak(),sc=D.scores.length;
+const B=[["First rating",sc>=1],["5 ratings",sc>=5],["7-day streak",st>=7],["10 workouts",D.wc>=10],
+["30-day streak",st>=30]];
+V('<h2>Me</h2><div class="bx"><h3>Badges</h3>'+B.map(b=>'<span class="bd'+(b[1]?" on":"")+'">'+
+b[0]+"</span>").join("")+'<p class="mu">'+D.wc+" workouts finished · "+sc+" photo ratings</p></div>"
++'<div class="bx"><h3>Weight ('+u+')</h3>'+spark(w.map(x=>x.v))+('<div class="row"><input type="number" inputmode="decimal" id="wv" placeholder="Today’s '+
+'weight"><button id="aw">Log</button></div>')+w.slice(-5).reverse().map(x=>'<div class="hr"><b>'+
+new Date(x.t).toLocaleDateString()+"</b>"+x.v+" "+u+"</div>").join("")+"</div>"
++'<div class="bx"><h3>Photo score trend</h3>'+spark(D.scores.map(x=>x.s))+"</div>");
+$("#aw").onclick=()=>{const v=parseFloat($("#wv").value);if(v>0){D.weights.push({t:Date.now(),
+v});save();go("me")}}};
+
+/* settings */
+V_.set=()=>{const s=D.set,o=(a,v)=>a.map(x=>"<option"+(x===v?" selected":"")+">"+x+"</option>").join("");
+V('<h2>Settings</h2><div class="bx"><h3>Look</h3><select id="th">'+o(["auto","light","dark"],
+s.theme)+'</select><label class="row" style="margin-bottom:8px">Accent color <input type="color" id="ac" value="'+
+s.acc+'" style="width:56px;height:38px;border:0;padding:0;background:none"></label><select id="un">'+
+o(["metric","imperial"],s.units)+'</select><label class="row" style="padding:6px 0"><input type="checkbox" id="pf"'+
+(s.proof!==0?" checked":"")+(' style="width:22px;height:22px"> Camera proof mode</label><label class="row" '+
+'style="padding:6px 0"><input type="checkbox" id="au"')+(s.auto?" checked":"")+' style="width:22px;height:22px"> Coach applies changes without asking</label></div>'
++'<div class="bx"><h3>Show tabs</h3>'+Object.keys(TABS).map(k=>'<label class="row" style="padding:6px 0"><input type="checkbox" data-k="'+
+k+'"'+(s.tabs[k]!==0?" checked":"")+' style="width:22px;height:22px"> '+TABS[k]+"</label>").join("")+
+'</div><div class="bx">'+pform()+'</div>'
++'<div class="bx"><h3>Your data</h3><p class="mu">Saved on this device. Account sync: '+SY.st+
+(('.</p><p class="mu">Rook version 5</p><div class="row"><button class="g" '+
+'id="ex">Export</button><button class="g" ')+
+'id="so">Sign out</button><button class="g" id="rs">Delete all</button></div><p id="e" '+
+'class="mu"></p></div>'));
+pbind();$("#th").onchange=e=>{s.theme=e.target.value;save();theme()};$("#ac").oninput=e=>{s.acc=e.target.value;
+save();theme()};$("#un").onchange=e=>{s.units=e.target.value;save()};$("#pf").onchange=e=>{
+s.proof=e.target.checked?1:0;save()};$("#au").onchange=e=>{s.auto=e.target.checked?1:0;save()}
+;
+$$("[data-k]").forEach(c=>c.onchange=()=>{s.tabs[c.dataset.k]=c.checked?1:0;if(!Object.values(s.tabs).some(Boolean)){
+s.tabs.rate=1;c.checked=c.dataset.k==="rate"}save();go("set")});
+$("#ex").onclick=async()=>{try{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([JSON.stringify(D)],
+{type:"application/json"}));a.download="rook-data.json";a.click()}catch(x){$("#e").textContent="Export failed."}
+};
+$("#rs").onclick=()=>{if($("#rs").dataset.c){try{localStorage.removeItem("rook")}catch(e){}
+D=JSON.parse(JSON.stringify(DEF));save();theme();go("onb")}else{$("#rs").dataset.c=1;$("#rs").textContent="Tap again to confirm"}
+}};
+
+let tx=0,ty=0,tt=0;
+document.addEventListener("touchstart",e=>{const t=e.touches[0];tx=t.clientX;ty=t.clientY;tt=Date.now()}
+,{passive:true});
+document.addEventListener("touchend",e=>{if($(".cam")||$("#sp"))return;if(e.target.closest&&e.target.closest("input,textarea,select,.cts,.imgs,details"))return;
+const t=e.changedTouches[0],dx=t.clientX-tx,dy=t.clientY-ty;if(Math.abs(dx)<70||Math.abs(dx)<Math.abs(dy)*1.6||Date.now()-tt>600)return;
+const o=$$("#nav button").map(b=>b.dataset.t),j=o.indexOf(cur)+(dx<0?1:-1);if(o.indexOf(cur)>=0&&o[j])go(o[j])}
+,{passive:true});
+document.addEventListener("click",e=>{if(e.target.closest&&e.target.closest("button,label.fb")&&navigator.vibrate&&!RM)navigator.vibrate(8)}
+);
+theme();go(D.prof.done?"rate":"onb");
+setTimeout(()=>{const e=$("#sp");if(e)e.remove()},2900);$("#sp").onclick=()=>$("#sp").remove();
+</script>
+<script type="module">
+import{initializeApp}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-app.js";
+import{getAuth,GoogleAuthProvider,signInWithPopup,signOut,onAuthStateChanged}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-auth.js";
+import{getFirestore,doc,getDoc,setDoc,collection,query,orderBy,limit,getDocs}from"https://www.gstatic.com/firebasejs/10.14.1/firebase-firestore.js";
+const app=initializeApp(window.ROOK_CONFIG.firebase),auth=getAuth(app),fs=getFirestore(app),
+lg=document.getElementById("lg");
+const sn=s=>({id:s.id,exists:s.exists(),data:()=>s.data()});
+const db={doc:p=>({get:async()=>sn(await getDoc(doc(fs,p))),set:d=>setDoc(doc(fs,p),d)}),
+collection:p=>{let o=null,l=50;const q={orderBy:(f,d)=>{o=[f,d];return q},limit:n=>{l=n;return q}
+,
+get:async()=>{const r=await getDocs(query(collection(fs,p),...(o?[orderBy(o[0],o[1])]:[]),limit(l)));
+return{docs:r.docs.map(d=>({id:d.id,data:()=>d.data()}))}}};return q}};
+document.getElementById("gs").onclick=async()=>{try{await signInWithPopup(auth,new GoogleAuthProvider())}
+catch(e){document.getElementById("le").textContent="Sign-in failed ("+(e.code||"error")+")."}
+};
+document.getElementById("ns").onclick=()=>{lg.hidden=true};
+document.addEventListener("click",e=>{if(e.target.id==="so")signOut(auth).then(()=>location.reload())}
+);
+onAuthStateChanged(auth,u=>{if(u){lg.hidden=true;window.setAI(window.makeAI(u));window.startSync(db,
+u.uid)}else{window.setAI(null);lg.hidden=false}});
+</script>
+</body>
+</html>
